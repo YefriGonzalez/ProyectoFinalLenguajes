@@ -31,6 +31,12 @@ public class VentanaPrincipalFrame extends javax.swing.JFrame {
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
         jPanel2 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTextArea1 = new javax.swing.JTextArea();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu3 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -38,7 +44,11 @@ public class VentanaPrincipalFrame extends javax.swing.JFrame {
         jMenuItem2 = new javax.swing.JMenuItem();
         jMenuItem4 = new javax.swing.JMenuItem();
         jMenu7 = new javax.swing.JMenu();
+        jMenuItem6 = new javax.swing.JMenuItem();
+        jMenuItem7 = new javax.swing.JMenuItem();
         jMenu8 = new javax.swing.JMenu();
+        jMenuItem8 = new javax.swing.JMenuItem();
+        jMenuItem9 = new javax.swing.JMenuItem();
         jMenu5 = new javax.swing.JMenu();
         jMenuItem5 = new javax.swing.JMenuItem();
 
@@ -51,16 +61,51 @@ public class VentanaPrincipalFrame extends javax.swing.JFrame {
 
         jPanel2.setBackground(new java.awt.Color(51, 51, 51));
 
+        jTextArea1.setBackground(new java.awt.Color(51, 51, 51));
+        jTextArea1.setColumns(20);
+        jTextArea1.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        jTextArea1.setForeground(new java.awt.Color(255, 255, 255));
+        jTextArea1.setRows(5);
+        jScrollPane1.setViewportView(jTextArea1);
+
+        jButton1.setText("Analisis Lexico");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        jButton2.setText("Analisis Sintactico");
+
+        jButton3.setText("Reporte de Tokens");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1001, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jButton1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 292, Short.MAX_VALUE)
+                .addComponent(jButton3)
+                .addGap(326, 326, 326)
+                .addComponent(jButton2)
+                .addContainerGap())
+            .addComponent(jScrollPane1)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 661, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 800, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton1)
+                    .addComponent(jButton3)
+                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(17, 17, 17))
         );
+
+        jButton4.setText("jButton4");
 
         jMenuBar1.setBackground(new java.awt.Color(51, 51, 51));
         jMenuBar1.setForeground(new java.awt.Color(102, 102, 102));
@@ -110,11 +155,37 @@ public class VentanaPrincipalFrame extends javax.swing.JFrame {
         jMenu7.setForeground(new java.awt.Color(255, 255, 255));
         jMenu7.setText("Copiar/Pegar");
         jMenu7.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+
+        jMenuItem6.setBackground(new java.awt.Color(51, 51, 51));
+        jMenuItem6.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        jMenuItem6.setForeground(new java.awt.Color(255, 255, 255));
+        jMenuItem6.setText("Copiar");
+        jMenu7.add(jMenuItem6);
+
+        jMenuItem7.setBackground(new java.awt.Color(51, 51, 51));
+        jMenuItem7.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        jMenuItem7.setForeground(new java.awt.Color(255, 255, 255));
+        jMenuItem7.setText("Pegar");
+        jMenu7.add(jMenuItem7);
+
         jMenuBar1.add(jMenu7);
 
         jMenu8.setForeground(new java.awt.Color(255, 255, 255));
         jMenu8.setText("Deshacer/Rehacer");
         jMenu8.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+
+        jMenuItem8.setBackground(new java.awt.Color(51, 51, 51));
+        jMenuItem8.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        jMenuItem8.setForeground(new java.awt.Color(255, 255, 255));
+        jMenuItem8.setText("Rehacer");
+        jMenu8.add(jMenuItem8);
+
+        jMenuItem9.setBackground(new java.awt.Color(51, 51, 51));
+        jMenuItem9.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        jMenuItem9.setForeground(new java.awt.Color(255, 255, 255));
+        jMenuItem9.setText("Deshacer");
+        jMenu8.add(jMenuItem9);
+
         jMenuBar1.add(jMenu8);
 
         jMenu5.setBackground(new java.awt.Color(51, 51, 51));
@@ -145,7 +216,7 @@ public class VentanaPrincipalFrame extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -163,6 +234,10 @@ public class VentanaPrincipalFrame extends javax.swing.JFrame {
         AcercaDeFrame acerca = new AcercaDeFrame();
         acerca.setVisible(true);        // TODO add your handling code here:
     }//GEN-LAST:event_jMenuItem5ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -200,6 +275,10 @@ public class VentanaPrincipalFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
@@ -212,6 +291,12 @@ public class VentanaPrincipalFrame extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;
+    private javax.swing.JMenuItem jMenuItem6;
+    private javax.swing.JMenuItem jMenuItem7;
+    private javax.swing.JMenuItem jMenuItem8;
+    private javax.swing.JMenuItem jMenuItem9;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextArea jTextArea1;
     // End of variables declaration//GEN-END:variables
 }
