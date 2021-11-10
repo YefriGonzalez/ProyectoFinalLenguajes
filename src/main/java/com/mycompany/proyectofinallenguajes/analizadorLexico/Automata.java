@@ -1,7 +1,11 @@
 package com.mycompany.proyectofinallenguajes.analizadorLexico;
 
+import com.mycompany.proyectofinallenguajes.frame.ReportesFrame;
+import com.mycompany.proyectofinallenguajes.frame.VentanaPrincipalFrame;
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -20,14 +24,15 @@ public class Automata {
     private ArrayList<Token> tokens = new ArrayList<>();
     private ArrayList<Error> errores = new ArrayList<>();
     private Tipo[] tipos = Tipo.values();
-    private PalabrasReservadas[] reservadas=PalabrasReservadas.values();
+    private PalabrasReservadas[] reservadas = PalabrasReservadas.values();
 
     public Automata(JTextArea textoEntrada) {
         this.textoEntrada = textoEntrada;
         inicializarMatriz();
+        estadoActual = 0;
     }
 
-    public void inicializarMatriz() {
+    private void inicializarMatriz() {
         int filas = 11;
         int columnas = 7;
         //A=1 B=2 C=3 D=4 E=5 F=6 g=7 h=8 i=9 j=10 k=11 error=-1
@@ -124,46 +129,70 @@ public class Automata {
     }
 
     public void leerTextArea() {
-        String texto = textoEntrada.getText();
-        lineas = texto.split("\n");
-        for (int i = 0; i < lineas.length; i++) {
-            if (lineas[i].charAt(0) == '/' && lineas[i].charAt(1) == '/') {
-                tokens.add(new Token(lineas[i], tipos[3].getTipo(), fila, columna));
-            } else {
-                palabras = lineas[i].split(" ");
-                for (int j = 0; j < palabras.length; j++) {
-                    analizarPalabra(palabras[j]);
-                    columna++;
-                }
-            }
-            columna = 0;
+        char[] caracteres = textoEntrada.getText().toCharArray();
+        for (int i = 0; i < caracteres.length; i++) {
+            analizarPalabra(caracteres[i]);
+            columna++;
             fila++;
         }
     }
 
-    private void analizarPalabra(String token) {
-        String opcion = "";
-        estadoActual = 0;
-        for (int i = 0; i < palabras.length; i++) {
-            for (int j = 0; j < reservadas.length; j++) {
-                if(palabras[i].equals(reservadas[j].getTipo())){
-                    tokens.add(new Token(palabras[j],reservadas[5].getTipo(), fila, columna));
+    private void analizarCaracter(char caracter) {
+        if (caracter=='\n') {
+            
+        }else {
+            if (caracter==' ') {
+                if (true) {
+                    
+                }else {
                 }
+            }else {
+                if (caracter=='\t') {
+                    if (true) {
+                        
+                    }else{
+                    
+                    }
+   
+                }else{
+                    if (caracter=='\r') {
+                        
+                    } else {
+                    }
+                }
+            
             }
+        
         }
         
-        char[] cadenaPalabra = token.toCharArray();
-        for (int i = 0; i < token.length(); i++) {
-            columna++;
-            if (Character.isAlphabetic(cadenaPalabra[i])) {
-                estadoActual = AutomataMatriz[estadoActual][0];
-            }else {
-                if ((Character.isDigit(cadenaPalabra[i]) | cadenaPalabra[i]=='-')&& estadoActual==0) {
-                    estadoActual = AutomataMatriz[estadoActual][1];
-                }else {
-                
-                }
+    }
+    Caracter[] caracterList = Caracter.values();
+
+    
+    public void reportes() {
+        if (errores.isEmpty()) {
+            DefaultTableModel model = new DefaultTableModel();
+            ReportesFrame.jTableReportes.setModel(model);
+            model.addColumn("Token");
+            model.addColumn("Lexema");
+            model.addColumn("Fila");
+            model.addColumn("Columna");
+            for (Token token : tokens) {
+                model.addRow(new Object[]{token.getTipo(), token.getTexto(), token.getFila(), token.getColumna()});
             }
+            VentanaPrincipalFrame.jButtonAnalisisSintactico.setEnabled(true);
+            VentanaPrincipalFrame.jButtonReportes.setEnabled(true);
+            JOptionPane.showMessageDialog(null, "Analisis Lexico Correcto, 0 errores econtrandos");
+        } else {
+            DefaultTableModel modelo = new DefaultTableModel();
+            ReportesFrame.jTableReportes.setModel(modelo);
+            modelo.addColumn("Cadena");
+            modelo.addColumn("Fila");
+            modelo.addColumn("Columna");
+            for (Error error : errores) {
+                modelo.addRow(new Object[]{error.getTexto(), error.getFila(), error.getColumna()});
+            }
+            JOptionPane.showMessageDialog(null, "" + errores.size() + " errores encontrados");
         }
     }
 }

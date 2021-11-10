@@ -5,18 +5,58 @@
  */
 package com.mycompany.proyectofinallenguajes.frame;
 
+import com.mycompany.proyectofinallenguajes.analizadorLexico.Automata;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Hashtable;
+import javax.swing.Action;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.event.UndoableEditEvent;
+import javax.swing.event.UndoableEditListener;
+import javax.swing.text.DefaultEditorKit;
+import javax.swing.undo.CannotRedoException;
+import javax.swing.undo.CannotUndoException;
+import javax.swing.undo.UndoManager;
+
 /**
  *
  * @author yefri
  */
 public class VentanaPrincipalFrame extends javax.swing.JFrame {
 
+    protected UndoManager undoManager = new UndoManager();
     /**
      * Creates new form VentanaPrincipalFrame
      */
+    File archivo;
+    boolean cambiosGuardados;
+
     public VentanaPrincipalFrame() {
+
         initComponents();
         this.setLocationRelativeTo(null);
+        EnumeradorLineas enumerador = new EnumeradorLineas(AreaDeCarga);
+        jScrollPane1.setRowHeaderView(enumerador);
+        AreaDeCarga.getDocument().addUndoableEditListener(new UndoableEditListener() {
+            public void undoableEditHappened(UndoableEditEvent e) {
+                undoManager.addEdit(e.getEdit());
+                updateButtons();
+            }
+        });
+        jButtonAnalisisSintactico.setEnabled(false);
+        jButtonReportes.setEnabled(false);
+    }
+
+    public void updateButtons() {
+        jMenuItemDeshacer.setText("Se puede Deshacer");
+        jMenuItemRehacer.setText("Se puede Rehacer");
+        jMenuItemDeshacer.setEnabled(undoManager.canUndo());
+        jMenuItemRehacer.setEnabled(undoManager.canRedo());
     }
 
     /**
@@ -32,23 +72,22 @@ public class VentanaPrincipalFrame extends javax.swing.JFrame {
         jMenu2 = new javax.swing.JMenu();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
+        AreaDeCarga = new javax.swing.JTextArea();
+        jButtonAnalisisLexico = new javax.swing.JButton();
+        jButtonAnalisisSintactico = new javax.swing.JButton();
+        jButtonReportes = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu3 = new javax.swing.JMenu();
-        jMenuItem1 = new javax.swing.JMenuItem();
-        jMenuItem3 = new javax.swing.JMenuItem();
-        jMenuItem2 = new javax.swing.JMenuItem();
-        jMenuItem4 = new javax.swing.JMenuItem();
+        jMenuItemNuevo = new javax.swing.JMenuItem();
+        jMenuitemGuardar = new javax.swing.JMenuItem();
+        jMenuItemGuardarComo = new javax.swing.JMenuItem();
+        jMenuItemAbrir = new javax.swing.JMenuItem();
         jMenu7 = new javax.swing.JMenu();
-        jMenuItem6 = new javax.swing.JMenuItem();
-        jMenuItem7 = new javax.swing.JMenuItem();
+        jMenuItemCopy = new javax.swing.JMenuItem();
+        jMenuItemPaste = new javax.swing.JMenuItem();
         jMenu8 = new javax.swing.JMenu();
-        jMenuItem8 = new javax.swing.JMenuItem();
-        jMenuItem9 = new javax.swing.JMenuItem();
+        jMenuItemRehacer = new javax.swing.JMenuItem();
+        jMenuItemDeshacer = new javax.swing.JMenuItem();
         jMenu5 = new javax.swing.JMenu();
         jMenuItem5 = new javax.swing.JMenuItem();
 
@@ -61,23 +100,29 @@ public class VentanaPrincipalFrame extends javax.swing.JFrame {
 
         jPanel2.setBackground(new java.awt.Color(51, 51, 51));
 
-        jTextArea1.setBackground(new java.awt.Color(51, 51, 51));
-        jTextArea1.setColumns(20);
-        jTextArea1.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
-        jTextArea1.setForeground(new java.awt.Color(255, 255, 255));
-        jTextArea1.setRows(5);
-        jScrollPane1.setViewportView(jTextArea1);
+        AreaDeCarga.setBackground(new java.awt.Color(51, 51, 51));
+        AreaDeCarga.setColumns(20);
+        AreaDeCarga.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        AreaDeCarga.setForeground(new java.awt.Color(255, 255, 255));
+        AreaDeCarga.setRows(5);
+        AreaDeCarga.setCaretColor(new java.awt.Color(255, 255, 255));
+        jScrollPane1.setViewportView(AreaDeCarga);
 
-        jButton1.setText("Analisis Lexico");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        jButtonAnalisisLexico.setText("Analisis Lexico");
+        jButtonAnalisisLexico.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                jButtonAnalisisLexicoActionPerformed(evt);
             }
         });
 
-        jButton2.setText("Analisis Sintactico");
+        jButtonAnalisisSintactico.setText("Analisis Sintactico");
 
-        jButton3.setText("Reporte de Tokens");
+        jButtonReportes.setText("Reporte de Tokens");
+        jButtonReportes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonReportesActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -85,11 +130,11 @@ public class VentanaPrincipalFrame extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButton1)
+                .addComponent(jButtonAnalisisLexico)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 292, Short.MAX_VALUE)
-                .addComponent(jButton3)
+                .addComponent(jButtonReportes)
                 .addGap(326, 326, 326)
-                .addComponent(jButton2)
+                .addComponent(jButtonAnalisisSintactico)
                 .addContainerGap())
             .addComponent(jScrollPane1)
         );
@@ -99,13 +144,11 @@ public class VentanaPrincipalFrame extends javax.swing.JFrame {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 800, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton3)
-                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jButtonAnalisisLexico)
+                    .addComponent(jButtonReportes)
+                    .addComponent(jButtonAnalisisSintactico, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(17, 17, 17))
         );
-
-        jButton4.setText("jButton4");
 
         jMenuBar1.setBackground(new java.awt.Color(51, 51, 51));
         jMenuBar1.setForeground(new java.awt.Color(102, 102, 102));
@@ -116,39 +159,49 @@ public class VentanaPrincipalFrame extends javax.swing.JFrame {
         jMenu3.setText("Archivo");
         jMenu3.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
 
-        jMenuItem1.setBackground(new java.awt.Color(51, 51, 51));
-        jMenuItem1.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
-        jMenuItem1.setForeground(new java.awt.Color(255, 255, 255));
-        jMenuItem1.setText("Nuevo");
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+        jMenuItemNuevo.setBackground(new java.awt.Color(51, 51, 51));
+        jMenuItemNuevo.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        jMenuItemNuevo.setForeground(new java.awt.Color(255, 255, 255));
+        jMenuItemNuevo.setText("Nuevo");
+        jMenuItemNuevo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
+                jMenuItemNuevoActionPerformed(evt);
             }
         });
-        jMenu3.add(jMenuItem1);
+        jMenu3.add(jMenuItemNuevo);
 
-        jMenuItem3.setBackground(new java.awt.Color(51, 51, 51));
-        jMenuItem3.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
-        jMenuItem3.setForeground(new java.awt.Color(255, 255, 255));
-        jMenuItem3.setText("Guardar");
-        jMenu3.add(jMenuItem3);
-
-        jMenuItem2.setBackground(new java.awt.Color(51, 51, 51));
-        jMenuItem2.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
-        jMenuItem2.setForeground(new java.awt.Color(255, 255, 255));
-        jMenuItem2.setText("Guardar Como");
-        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+        jMenuitemGuardar.setBackground(new java.awt.Color(51, 51, 51));
+        jMenuitemGuardar.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        jMenuitemGuardar.setForeground(new java.awt.Color(255, 255, 255));
+        jMenuitemGuardar.setText("Guardar");
+        jMenuitemGuardar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem2ActionPerformed(evt);
+                jMenuitemGuardarActionPerformed(evt);
             }
         });
-        jMenu3.add(jMenuItem2);
+        jMenu3.add(jMenuitemGuardar);
 
-        jMenuItem4.setBackground(new java.awt.Color(51, 51, 51));
-        jMenuItem4.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
-        jMenuItem4.setForeground(new java.awt.Color(255, 255, 255));
-        jMenuItem4.setText("Abrir");
-        jMenu3.add(jMenuItem4);
+        jMenuItemGuardarComo.setBackground(new java.awt.Color(51, 51, 51));
+        jMenuItemGuardarComo.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        jMenuItemGuardarComo.setForeground(new java.awt.Color(255, 255, 255));
+        jMenuItemGuardarComo.setText("Guardar Como");
+        jMenuItemGuardarComo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemGuardarComoActionPerformed(evt);
+            }
+        });
+        jMenu3.add(jMenuItemGuardarComo);
+
+        jMenuItemAbrir.setBackground(new java.awt.Color(51, 51, 51));
+        jMenuItemAbrir.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        jMenuItemAbrir.setForeground(new java.awt.Color(255, 255, 255));
+        jMenuItemAbrir.setText("Abrir");
+        jMenuItemAbrir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemAbrirActionPerformed(evt);
+            }
+        });
+        jMenu3.add(jMenuItemAbrir);
 
         jMenuBar1.add(jMenu3);
 
@@ -156,17 +209,27 @@ public class VentanaPrincipalFrame extends javax.swing.JFrame {
         jMenu7.setText("Copiar/Pegar");
         jMenu7.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
 
-        jMenuItem6.setBackground(new java.awt.Color(51, 51, 51));
-        jMenuItem6.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
-        jMenuItem6.setForeground(new java.awt.Color(255, 255, 255));
-        jMenuItem6.setText("Copiar");
-        jMenu7.add(jMenuItem6);
+        jMenuItemCopy.setBackground(new java.awt.Color(51, 51, 51));
+        jMenuItemCopy.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        jMenuItemCopy.setForeground(new java.awt.Color(255, 255, 255));
+        jMenuItemCopy.setText("Copiar");
+        jMenuItemCopy.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemCopyActionPerformed(evt);
+            }
+        });
+        jMenu7.add(jMenuItemCopy);
 
-        jMenuItem7.setBackground(new java.awt.Color(51, 51, 51));
-        jMenuItem7.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
-        jMenuItem7.setForeground(new java.awt.Color(255, 255, 255));
-        jMenuItem7.setText("Pegar");
-        jMenu7.add(jMenuItem7);
+        jMenuItemPaste.setBackground(new java.awt.Color(51, 51, 51));
+        jMenuItemPaste.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        jMenuItemPaste.setForeground(new java.awt.Color(255, 255, 255));
+        jMenuItemPaste.setText("Pegar");
+        jMenuItemPaste.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemPasteActionPerformed(evt);
+            }
+        });
+        jMenu7.add(jMenuItemPaste);
 
         jMenuBar1.add(jMenu7);
 
@@ -174,17 +237,27 @@ public class VentanaPrincipalFrame extends javax.swing.JFrame {
         jMenu8.setText("Deshacer/Rehacer");
         jMenu8.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
 
-        jMenuItem8.setBackground(new java.awt.Color(51, 51, 51));
-        jMenuItem8.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
-        jMenuItem8.setForeground(new java.awt.Color(255, 255, 255));
-        jMenuItem8.setText("Rehacer");
-        jMenu8.add(jMenuItem8);
+        jMenuItemRehacer.setBackground(new java.awt.Color(51, 51, 51));
+        jMenuItemRehacer.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        jMenuItemRehacer.setForeground(new java.awt.Color(255, 255, 255));
+        jMenuItemRehacer.setText("Rehacer");
+        jMenuItemRehacer.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemRehacerActionPerformed(evt);
+            }
+        });
+        jMenu8.add(jMenuItemRehacer);
 
-        jMenuItem9.setBackground(new java.awt.Color(51, 51, 51));
-        jMenuItem9.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
-        jMenuItem9.setForeground(new java.awt.Color(255, 255, 255));
-        jMenuItem9.setText("Deshacer");
-        jMenu8.add(jMenuItem9);
+        jMenuItemDeshacer.setBackground(new java.awt.Color(51, 51, 51));
+        jMenuItemDeshacer.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        jMenuItemDeshacer.setForeground(new java.awt.Color(255, 255, 255));
+        jMenuItemDeshacer.setText("Deshacer");
+        jMenuItemDeshacer.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemDeshacerActionPerformed(evt);
+            }
+        });
+        jMenu8.add(jMenuItemDeshacer);
 
         jMenuBar1.add(jMenu8);
 
@@ -222,22 +295,162 @@ public class VentanaPrincipalFrame extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
+    private void jMenuItemNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemNuevoActionPerformed
+        if (cambiosGuardados || AreaDeCarga.getText().isEmpty()) {
+            archivo = null;
+            AreaDeCarga.setText("");
+        } else {
+            int opcion = JOptionPane.showConfirmDialog(null, "Hay cambio sin guardar \n ¿Desea Descartar?");
+            if (opcion == 0) {
+                archivo = null;
+                AreaDeCarga.setText("");
+            } else if (opcion == 1) {
+                if (archivo == null) {
+                    guardarDocumento();
+                } else {
+                    guardarEnMismoArchivo();
+                }
+            }
+        }
+    }//GEN-LAST:event_jMenuItemNuevoActionPerformed
 
-    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jMenuItem2ActionPerformed
+    private void jMenuItemGuardarComoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemGuardarComoActionPerformed
+        guardarDocumento();
+    }//GEN-LAST:event_jMenuItemGuardarComoActionPerformed
 
+    public void guardarDocumento() {
+        String documento;
+        JFileChooser guardar = new JFileChooser();
+        if (guardar.showDialog(null, "Guardar Como") == JFileChooser.APPROVE_OPTION) {
+            File archivoGuardar = guardar.getSelectedFile();
+            if (archivoGuardar.getName().endsWith("txt")) {
+                documento = AreaDeCarga.getText();
+                try {
+                    FileOutputStream salida = new FileOutputStream(archivoGuardar);
+                    byte[] bytxt = documento.getBytes();
+                    salida.write(bytxt);
+                    cambiosGuardados = true;
+                    JOptionPane.showMessageDialog(null, "Archivo Guardado con exito");
+                } catch (FileNotFoundException e) {
+                    cambiosGuardados = false;
+                    JOptionPane.showMessageDialog(null, "Error al guardar archivo");
+                } catch (IOException ex) {
+                    cambiosGuardados = false;
+                    JOptionPane.showMessageDialog(null, "Error al guardar archivo");
+                }
+            } else {
+                cambiosGuardados = false;
+                JOptionPane.showMessageDialog(null, "Nombre de archivo incorrecto");
+            }
+        }
+
+    }
     private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
         AcercaDeFrame acerca = new AcercaDeFrame();
         acerca.setVisible(true);        // TODO add your handling code here:
     }//GEN-LAST:event_jMenuItem5ActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void jButtonAnalisisLexicoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAnalisisLexicoActionPerformed
+        Automata automata=new Automata(AreaDeCarga);
+        automata.leerTextArea();
+    }//GEN-LAST:event_jButtonAnalisisLexicoActionPerformed
+
+    private void jMenuItemAbrirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemAbrirActionPerformed
+        if (cambiosGuardados || AreaDeCarga.getText().isEmpty()) {
+            abrir();
+        } else {
+            int opcion = JOptionPane.showConfirmDialog(null, "Hay cambio sin guardar \n ¿Desea Descartar?");
+            if (opcion == 0) {
+                abrir();
+                archivo=null;
+            } else if (opcion==1) {
+                if (archivo==null) {
+                    guardarDocumento();
+                } else {
+                    guardarEnMismoArchivo();
+                }
+            }
+        }
+
+    }//GEN-LAST:event_jMenuItemAbrirActionPerformed
+
+    public void abrir() {
+        JFileChooser ventanaCarga = new JFileChooser();// creo mi objeto file chooser
+        AreaDeCarga.setText("");
+        int num = ventanaCarga.showOpenDialog(this);// abro mi ventana para buscar el archivo y lo guardo en un entero
+        if (num == JFileChooser.APPROVE_OPTION) { // condiciones para que sea la opcion que si se cargo el archivo
+            String linea; // creo una variable tipo String
+            archivo = ventanaCarga.getSelectedFile(); // Convierto en archivo el archivo seleccionado en la ventana
+            try {
+                FileReader leerArchivo = new FileReader(archivo);// Con el fileReader leo el arhivo
+                BufferedReader textoLeido = new BufferedReader(leerArchivo);// Con el bufferde reader puedo leer linea por linea del archivo
+                while ((linea = textoLeido.readLine()) != null) { // este ciclo me sirve para escribir todo el archivo pero linea por linea
+                    AreaDeCarga.append(linea + "\n"); // escribimos la linea leida en el TEXT AREA
+                }
+            } catch (FileNotFoundException ex) {
+                JOptionPane.showMessageDialog(null, "Error al cargar el archivo");
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(null, "Error al leer el archivo");
+            }
+        }
+    }
+    private void jMenuItemCopyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemCopyActionPerformed
+        AreaDeCarga.copy();
+    }//GEN-LAST:event_jMenuItemCopyActionPerformed
+
+    private void jMenuItemPasteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemPasteActionPerformed
+        AreaDeCarga.paste();
+    }//GEN-LAST:event_jMenuItemPasteActionPerformed
+
+    private void jMenuItemRehacerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemRehacerActionPerformed
+        try {
+            undoManager.redo();
+        } catch (CannotRedoException e) {
+            e.printStackTrace();
+        }
+        updateButtons();
+    }//GEN-LAST:event_jMenuItemRehacerActionPerformed
+
+    private void jMenuitemGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuitemGuardarActionPerformed
+        guardarEnMismoArchivo();
+
+    }//GEN-LAST:event_jMenuitemGuardarActionPerformed
+
+    public void guardarEnMismoArchivo() {
+        String documento = AreaDeCarga.getText();
+        if (archivo != null) {
+            try {
+                FileOutputStream salida = new FileOutputStream(archivo.getPath());
+                byte[] bytxt = documento.getBytes();
+                salida.write(bytxt);
+                cambiosGuardados = true;
+                JOptionPane.showMessageDialog(null, "Cambios Guardados");
+            } catch (FileNotFoundException e) {
+                JOptionPane.showMessageDialog(null, "Error al guardar archivo");
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(null, "Error al guardar archivo");
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "No ha sido cargado ningun archivo");
+            cambiosGuardados = false;
+            guardarDocumento();
+        }
+    }
+    private void jMenuItemDeshacerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemDeshacerActionPerformed
+        try {
+            undoManager.undo();
+        } catch (CannotUndoException e) {
+            e.printStackTrace();
+        }
+        updateButtons();
+    }//GEN-LAST:event_jMenuItemDeshacerActionPerformed
+
+    private void jButtonReportesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonReportesActionPerformed
+        ReportesFrame reporte=new ReportesFrame();
+        reporte.setVisible(true);
+    }//GEN-LAST:event_jButtonReportesActionPerformed
+
+   
 
     /**
      * @param args the command line arguments
@@ -275,10 +488,10 @@ public class VentanaPrincipalFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
+    private javax.swing.JTextArea AreaDeCarga;
+    private javax.swing.JButton jButtonAnalisisLexico;
+    public static javax.swing.JButton jButtonAnalisisSintactico;
+    public static javax.swing.JButton jButtonReportes;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
@@ -286,17 +499,16 @@ public class VentanaPrincipalFrame extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu7;
     private javax.swing.JMenu jMenu8;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem2;
-    private javax.swing.JMenuItem jMenuItem3;
-    private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;
-    private javax.swing.JMenuItem jMenuItem6;
-    private javax.swing.JMenuItem jMenuItem7;
-    private javax.swing.JMenuItem jMenuItem8;
-    private javax.swing.JMenuItem jMenuItem9;
+    private javax.swing.JMenuItem jMenuItemAbrir;
+    private javax.swing.JMenuItem jMenuItemCopy;
+    private javax.swing.JMenuItem jMenuItemDeshacer;
+    private javax.swing.JMenuItem jMenuItemGuardarComo;
+    private javax.swing.JMenuItem jMenuItemNuevo;
+    private javax.swing.JMenuItem jMenuItemPaste;
+    private javax.swing.JMenuItem jMenuItemRehacer;
+    private javax.swing.JMenuItem jMenuitemGuardar;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea jTextArea1;
     // End of variables declaration//GEN-END:variables
 }
